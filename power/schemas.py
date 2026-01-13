@@ -39,7 +39,10 @@ class StateShortEnum(str, Enum):
     WB = "WB"
 
 
-
+class DailyTemperatureSchema(Schema):
+    min: float
+    max: float
+    average: float
 
 
 class StateOut(Schema):
@@ -76,6 +79,7 @@ class ForecastHourlyOut(Schema):
     average_load_mw: float
     peak_load_mw: float
     mape_difference_percent: Optional[float] = None
+    daily_temperature: Optional[DailyTemperatureSchema] = None
     points: list[HourlyPointSchema]
 
 
@@ -89,9 +93,8 @@ class Forecast15MinPoint(Schema):
 class Forecast15MinOut(Schema):
     state: str
     date: str
+    daily_temperature: Optional[DailyTemperatureSchema] = None
     points: List[Forecast15MinPoint]
-
-
 
 
 

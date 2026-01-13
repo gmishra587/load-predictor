@@ -72,7 +72,7 @@ def get_hourly_forecast_data(state_short: StateShortEnum, date: str):
     energy_mu_per_day = float(state_fc["yhat"][0])
 
     # =====================================================
-    # 7️⃣ MU → MW conversion (FINAL & CORRECT)
+    # 7️⃣ MU → MW conversion
     # =====================================================
     average_load_mw = round((energy_mu_per_day * 1000) / 24, 2)
 
@@ -90,7 +90,24 @@ def get_hourly_forecast_data(state_short: StateShortEnum, date: str):
             p["datetime"] = p["datetime"].isoformat()
 
     # =====================================================
-    # 9️⃣ Peak load (MW) — ONLY from hourly MW
+    # 🆕 8️⃣A Daily temperature summary (NEW)
+    # =====================================================
+    temps = [
+        p["temperature"]
+        for p in hourly
+        if p.get("temperature") is not None
+    ]
+
+    daily_temperature = None
+    if temps:
+        daily_temperature = {
+            "min": round(min(temps), 2),
+            "max": round(max(temps), 2),
+            "average": round(sum(temps) / len(temps), 2)
+        }
+
+    # =====================================================
+    # 9️⃣ Peak load (MW)
     # =====================================================
     peak_load_mw = round(
         max(p["mw"] for p in hourly),
@@ -98,7 +115,7 @@ def get_hourly_forecast_data(state_short: StateShortEnum, date: str):
     )
 
     # =====================================================
-    # 🔟 Save daily prediction (MW)
+    # 🔟 Save daily prediction
     # =====================================================
     with transaction.atomic():
         DailyPredictionHistory.objects.update_or_create(
@@ -110,7 +127,7 @@ def get_hourly_forecast_data(state_short: StateShortEnum, date: str):
         )
 
     # =====================================================
-    # 1️⃣1️⃣ Final response (NO MAPE, NO NULL)
+    # 1️⃣1️⃣ Final response
     # =====================================================
     return {
         "state": state_short,
@@ -119,7 +136,6 @@ def get_hourly_forecast_data(state_short: StateShortEnum, date: str):
         "energy_consumption_mu_per_day": round(energy_mu_per_day, 2),
         "average_load_mw": average_load_mw,
         "peak_load_mw": peak_load_mw,
+        "daily_temperature": daily_temperature,   # 👈 NEW
         "points": hourly
     }
-
-

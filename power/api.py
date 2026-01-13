@@ -156,35 +156,37 @@ def forecast_15min(
 ):
     """
     **URL:** GET /forecast-15min  
-    **Description:** Returns 15-minute forecast by disaggregating hourly forecast.  
+    **Description:** Returns 15-minute forecast by disaggregating hourly forecast.
 
     - state_code: Short code of the state (Dropdown)
-    -- example: DL, MH, TN, UP, AP, AR, AS, BR, CH, CG, GA, GJ, HR, HP, JK, JH, KA, KL, MN, ML, MZ, MP, NL, OD, PY, PB, RJ, SK, TS, TR, UK, WB
     - forecast_date: YYYY-MM-DD (optional, defaults to today)
-
-    **Response 200 OK Example:**
-    ```json
-    {
-        "state": "WB",
-        "date": "2026-01-09",
-        "points": [
-            {"datetime": "2026-01-09T00:00:00", "mw": 480.5},
-            {"datetime": "2026-01-09T00:15:00", "mw": 485.2}
-        ]
-    }
-    ```
     """
 
+    # =====================================================
+    # 1️⃣ Get forecast date
+    # =====================================================
     forecast_date = query.forecast_date
 
-    hourly = get_hourly_forecast_data(state_code, forecast_date) 
+    # =====================================================
+    # 2️⃣ Get hourly forecast (already has daily_temperature)
+    # =====================================================
+    hourly = get_hourly_forecast_data(state_code, forecast_date)
 
+    # =====================================================
+    # 3️⃣ Convert hourly points → DataFrame
+    # =====================================================
     df = pd.DataFrame(hourly["points"])
     df["ds"] = pd.to_datetime(df["datetime"])
     df["yhat"] = df["mw"]
 
+    # =====================================================
+    # 4️⃣ Disaggregate hourly → 15-minute
+    # =====================================================
     df_15 = disaggregate_hourly_to_15min(df)
 
+    # =====================================================
+    # 5️⃣ Build response points
+    # =====================================================
     points = [
         {
             "datetime": row.ds.isoformat(),
@@ -193,11 +195,16 @@ def forecast_15min(
         for row in df_15.itertuples()
     ]
 
+    # =====================================================
+    # 6️⃣ Final response (WITH daily temperature)
+    # =====================================================
     return {
-        "state": STATE_CODE_TO_NAME.get(state_code.value, hourly["state"]),
-        "date": forecast_date.isoformat(),
-        "points": points
-    }
+    "state": STATE_CODE_TO_NAME.get(state_code.value, hourly["state"]),
+    "date": forecast_date.isoformat(),
+    "daily_temperature": hourly.get("daily_temperature"),
+    "points": points
+}
+
 
 
 
