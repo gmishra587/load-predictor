@@ -48,3 +48,46 @@ def add_calendar_features(df: pd.DataFrame) -> pd.DataFrame:
     df.loc[month.isin([10, 11]), "season"] = 3    # post-monsoon
 
     return df
+
+
+
+
+
+STATE_IN = [
+    {"code": "DL", "name": "Delhi"},
+    {"code": "MH", "name": "Maharashtra"},
+    {"code": "TN", "name": "Tamil Nadu"},
+    {"code": "UP", "name": "Uttar Pradesh"},
+    {"code": "AP", "name": "Andhra Pradesh"},
+    {"code": "AR", "name": "Arunachal Pradesh"},
+    {"code": "AS", "name": "Assam"},
+    {"code": "BR", "name": "Bihar"},
+    {"code": "CH", "name": "Chandigarh"},
+    {"code": "CG", "name": "Chhattisgarh"},
+    {"code": "GA", "name": "Goa"},
+    {"code": "GJ", "name": "Gujarat"},
+    {"code": "HR", "name": "Haryana"},
+    {"code": "HP", "name": "Himachal Pradesh"},
+    {"code": "JK", "name": "Jammu & Kashmir"},
+    {"code": "JH", "name": "Jharkhand"},
+    {"code": "KA", "name": "Karnataka"},
+    {"code": "KL", "name": "Kerala"},
+    {"code": "MN", "name": "Manipur"},
+    {"code": "ML", "name": "Meghalaya"},
+    {"code": "MZ", "name": "Mizoram"},
+    {"code": "MP", "name": "Madhya Pradesh"},
+    {"code": "NL", "name": "Nagaland"},
+    {"code": "OD", "name": "Odisha"},
+    {"code": "PY", "name": "Pondicherry"},
+    {"code": "PB", "name": "Punjab"},
+    {"code": "RJ", "name": "Rajasthan"},
+    {"code": "SK", "name": "Sikkim"},
+    {"code": "TS", "name": "Telangana"},
+    {"code": "TR", "name": "Tripura"},
+    {"code": "UK", "name": "Uttarakhand"},
+    {"code": "WB", "name": "West Bengal"},
+]
+
+
+
+STATE_CODE_TO_NAME = {s["code"]: s["name"] for s in STATE_IN}

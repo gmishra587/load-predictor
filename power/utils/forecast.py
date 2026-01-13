@@ -21,7 +21,7 @@ def get_hourly_forecast_data(state_short: StateShortEnum, date: str):
     # 2️⃣ Load weather + models
     # =====================================================
     weather_data, region_model, state_model = background_work(
-        state_short=state_short.name,
+        state_short=state_short.value,
         start_date=forecast_date,
         frequency="hourly"
     )
@@ -102,7 +102,7 @@ def get_hourly_forecast_data(state_short: StateShortEnum, date: str):
     # =====================================================
     with transaction.atomic():
         DailyPredictionHistory.objects.update_or_create(
-            state=state_short.name,
+            state=state_short.value,
             date=forecast_date,
             defaults={
                 "load_mw": average_load_mw

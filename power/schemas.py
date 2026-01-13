@@ -5,40 +5,46 @@ from datetime import date
 from pydantic import Field
 
 class StateShortEnum(str, Enum):
-    "Short code = value, full name = key"
+    DL = "DL"
+    MH = "MH"
+    TN = "TN"
+    UP = "UP"
+    AP = "AP"
+    AR = "AR"
+    AS = "AS"
+    BR = "BR"
+    CH = "CH"
+    CG = "CG"
+    GA = "GA"
+    GJ = "GJ"
+    HR = "HR"
+    HP = "HP"
+    JK = "JK"
+    JH = "JH"
+    KA = "KA"
+    KL = "KL"
+    MN = "MN"
+    ML = "ML"
+    MZ = "MZ"
+    MP = "MP"
+    NL = "NL"
+    OD = "OD"
+    PY = "PY"
+    PB = "PB"
+    RJ = "RJ"
+    SK = "SK"
+    TS = "TS"
+    TR = "TR"
+    UK = "UK"
+    WB = "WB"
 
-    DL = "Delhi"
-    MH = "Maharashtra"
-    TN = "Tamil Nadu"
-    UP = "Uttar Pradesh"
-    AP = "Andhra Pradesh"
-    AR = "Arunachal Pradesh"
-    AS = "Assam"
-    BR = "Bihar"
-    CH = "Chandigarh"
-    CG = "Chhattisgarh"
-    GA = "Goa"
-    GJ = "Gujarat"
-    HR = "Haryana"
-    HP = "Himachal Pradesh"
-    JK = "J & K"
-    JH = "Jharkhand"
-    KA = "Karnataka"
-    KL = "Kerala"
-    MN = "Manipur"
-    ML = "Meghalaya"
-    MZ = "Mizoram"
-    MP = "Madhya Pradesh"
-    NL = "Nagaland"
-    OD = "Odisha"
-    PY = "Pondicherry"
-    PB = "Punjab"
-    RJ = "Rajasthan"
-    SK = "Sikkim"
-    TS = "Telangana"
-    TR = "Tripura"
-    UK = "Uttarakhand"
-    WB = "West Bengal"
+
+
+
+
+class StateOut(Schema):
+    code: str
+    name: str
 
 
 
@@ -112,3 +118,13 @@ class PreviousPredictionOut(Schema):
     results: List[PreviousPredictionItem]
 
 
+
+class LiveMAPEOut(Schema):
+    state: str
+    date: str
+    from_time: str
+    to_time: str
+    actual_load_mw: float
+    predicted_load_mw: float
+    mape_percent: float
+    status: str
