@@ -11,7 +11,7 @@ from power.schemas import DateQuerySchema, Forecast15MinOut, ForecastHourlyOut, 
 from power.utils.upload import save_power_data_from_xlsx
 from ninja.errors import HttpError
 from django.db.models import Avg
-from power.utils.forecast import get_hourly_forecast_data
+from power.utils.forecast import get_forecast_5min_data, get_hourly_forecast_data
 from power.utils.metadata import STATE_IN , STATE_CODE_TO_NAME
 from typing import List
 from ninja.pagination import paginate, PageNumberPagination
@@ -457,3 +457,39 @@ def live_mape_api(
         "mape_percent": mape_percent,
         "status": status
     }
+
+
+
+
+@router.get("/forecast-5min", response=ForecastHourlyOut)
+def forecast_5min(
+    request,
+    state_code: StateShortEnum,
+    query: DateQuerySchema = Query(...)
+):
+    """
+    **URL:** GET /forecast-5min  
+    **Description:** Returns 5-minute forecast for a given state and date.  
+
+    **Query Params:**
+    - state_code: Short code of the state (Dropdown)
+      -- example: DL, MH, TN, UP, AP, AR, AS, BR, CH, CG, GA, GJ, HR, HP, JK, JH, KA, KL, MN, ML, MZ, MP, NL, OD, PY, PB, RJ, SK, TS, TR, UK, WB
+    - forecast_date: YYYY-MM-DD (optional, defaults to today)
+
+    **Response 200 OK Example:**
+    ```json
+    {
+        "state": "Delhi",
+        "date": "2026-01-15",
+        "average_load_mw": 3968.77,
+        "peak_load_mw": 4696.96,
+        "points": [
+            {"datetime": "2026-01-15T00:00:00", "mw": 3530.95},
+            {"datetime": "2026-01-15T00:05:00", "mw": 3540.12}
+        ]
+    }
+    ```
+    """
+    data = get_forecast_5min_data(state=state_code, forecast_date=query.forecast_date)
+    data["state"] = STATE_CODE_TO_NAME.get(state_code.value, state_code.value)
+    return data

@@ -41,3 +41,20 @@ class DailyPredictionHistory(models.Model):
     class Meta:
         unique_together = ("state", "date")
         ordering = ["-date"]
+
+
+
+
+class StateLoad5Min(models.Model):
+    state = models.CharField(max_length=10)
+    datetime = models.DateTimeField()
+    load_mw = models.FloatField()
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["state", "datetime"],
+                name="unique_state_datetime_5min_load"
+            )
+        ]
+        ordering = ["-datetime"]
