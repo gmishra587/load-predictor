@@ -147,9 +147,6 @@ def train_all_models(start_date=None, frequency="hourly"):
 
 
 
-
-
-
     # ---------- STATE DAILY MODELS ----------
     logger.info("\nStarting STATE DAILY models training")
     for state in STATE_TO_REGION.keys():
